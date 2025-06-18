@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\Services\Dao;
+namespace App\Dao;
 
 use App\Models\User;
 
@@ -24,6 +24,16 @@ class UserDao
             return $user;
         }
         return null;
+    }
+
+    public function all()
+    {
+        return User::all();
+    }
+
+    public function delete(int $id): bool
+    {
+        return User::destroy($id);
     }
 
 
