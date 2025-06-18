@@ -29,6 +29,11 @@ class UserBO
             $data['password'] = bcrypt($data['password']);
         }
 
+        $user = $this->getUserById($id);
+        if (!$user) {
+            return null; // User not found
+        }
+        
         return $this->userDao->update($id, $data);
     }
 

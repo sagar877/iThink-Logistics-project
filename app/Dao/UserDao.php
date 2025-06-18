@@ -18,12 +18,7 @@ class UserDao
 
     public function update(int $id, array $data): ?User
     {
-        $user = $this->findById($id);
-        if ($user) {
-            $user->update($data);
-            return $user;
-        }
-        return null;
+        return User::where('id', $id)->update($data);;
     }
 
     public function all()
