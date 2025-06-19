@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\BO\UserBO;
-use App\DAO\UserDAO;
 use Illuminate\Support\Facades\Cache;
 
 class UserService
