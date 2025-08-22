@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\ApiUserService;
+use App\Models\ApiUser;
 use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
@@ -13,6 +14,28 @@ class AuthController extends Controller
     public function __construct(ApiUserService $apiUserService)
     {
         $this->apiUserService = $apiUserService;
+    }
+
+    public function register(Request $request)
+    {
+        $request->validate([
+            'username' => 'required|string|max:255',
+            'password' => 'required|string|min:6',
+        ]);
+
+        $user = ApiUser::create([
+            'username' => $request->username,
+            'password' => bcrypt($request->password),
+        ]);
+
+        $token = $user->createToken('api-token')->plainTextToken;;
+        $user->api_token = $token;
+        $user->save();
+
+        return response()->json([
+            'user' => $user,
+            'token' => $token,
+        ], 201);
     }
 
     public function login(Request $request)
@@ -29,16 +52,8 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        // Create Sanctum token
-        $token = $user->createToken('Personal Access Token')->plainTextToken;
-
-        // Save token in api_users table
-        $user->api_token = $token;
-        $user->save();
-
         return response()->json([
             'message' => 'Login successful',
-            'token' => $token,
         ]);
     }
 }
